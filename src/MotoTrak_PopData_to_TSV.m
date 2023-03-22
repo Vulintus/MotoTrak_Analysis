@@ -726,8 +726,8 @@ for d = 1:length(devices)                                                   %Ste
                                     sum(times(k:end) - times(k) <= 300 & ...
                                     data(s).outcome(k:end) == 'H');         %Count the number of hits within 5 minutes of each trial.
                             end
-                            fprintf(fid(d),'%1.0f',nanmax(a(:,1)));         %Print the maximum number of hits in any 5 minutes.
-                            fprintf(fid(d),'%1.0f',nanmax(a(:,2)));         %Print the maximum number of trials in any 5 minutes.
+%                             fprintf(fid(d),'%1.0f',nanmax(a(:,1)));         %Print the maximum number of hits in any 5 minutes.
+%                             fprintf(fid(d),'%1.0f',nanmax(a(:,2)));         %Print the maximum number of trials in any 5 minutes.
                             a(a(:,2) < 10,:) = NaN;                         %Kick out any epochs with fewer than 10 trials.
                             a = a(:,1)./a(:,2);                             %Calculate the hit rate within each 5 minute epoch.
                             fprintf(fid(d),'%1.3f',nanmax(a(:,1)));         %Print the maximum hit rate within any 5 minutes.
