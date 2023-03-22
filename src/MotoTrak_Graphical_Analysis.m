@@ -224,7 +224,7 @@ for d = 1:length(devices)                                                   %Ste
     set(obj(5),'callback',{@Export_Data,ax,obj});                           %Set the callback for the export button.
     set(fig,'userdata',plotdata);                                           %Save the plot data to the figure's 'UserData' property.
     Plot_Timeline(obj(2),[],obj,[]);                                        %Call the function to plot the session data in the figure.
-    set(fig,'ResizeFcn',{@Resize,ax,obj});                                  %Set the Resize function for the figure.
+    set(fig,'ResizeFcn',{@MotoTrak_Graphical_Analysis_Resize,ax,obj});      %Set the Resize function for the figure.
 end
 
 
@@ -395,7 +395,8 @@ if any(strcmpi({'image','both'},output))                                    %If 
     set(obj,'visible','on');                                                %Make all of the other figures visible again.
     i = strcmpi(get(obj,'fontweight'),'bold');                              %Find the pushbutton with the bold fontweight.
     Plot_Timeline(obj(i),[],obj,[]);                                        %Call the subfunction to plot the data by the appropriate timeline.
-    set(fig,'color',temp,'ResizeFcn',{@Resize,ax,obj});                     %Set the Resize function for the figure.
+    set(fig,'color',temp,...
+        'ResizeFcn',{@MotoTrak_Graphical_Analysis_Resize,ax,obj});          %Set the Resize function for the figure.
     drawnow;                                                                %Immediately update the figure.    
 end
 if any(strcmpi({'spreadsheet','both'},output))                              %If the user wants to save a spreadsheet...
@@ -546,7 +547,7 @@ end
 
 
 %% This function is called whenever the main figure is resized.
-function Resize(hObject,~,ax,obj)
+function MotoTrak_Graphical_Analysis_Resize(hObject,~,ax,obj)
 set(hObject,'units','centimeters');                                         %Set the figure units to centimeters
 pos = get(hObject,'position');                                              %Grab the current figure size, in centimeters.
 w = pos(3);                                                                 %Grab the width of the figure.

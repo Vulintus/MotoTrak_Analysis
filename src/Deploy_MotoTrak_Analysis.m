@@ -32,3 +32,5 @@ collated_filename = fullfile(release_path,collated_filename);               %Add
 
 Vulintus_Collate_Functions(start_script,collated_filename,...
     'depfunfolder','on');                                                   %Call the generalized function-collating script.
+
+open(collated_filename);                                                    %Open the collated script.

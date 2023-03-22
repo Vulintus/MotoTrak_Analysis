@@ -1,6 +1,6 @@
 function MotoTrak_Analysis
 
-%Collated: 03/22/2023, 15:53:49
+%Collated: 03/22/2023, 17:49:38
 
 MotoTrak_Analysis_Startup;                                                  %Call the startup function.
 
@@ -104,8 +104,9 @@ end
 
 %% ***********************************************************************
 function [data, varargout] = ArdyMotorFileRead(file)
+
 %
-%ARDYMOTORFILEREAD.m - Vulintus, Inc., 2015.
+%ArdyMotorFileRead.m - Vulintus, Inc., 2015.
 %
 %   ARDYMOTORFILEREAD reads in the sensor recordings from motor behavioral
 %   tasks controlled by an Arduino board.  The data is organized into a
@@ -116,9 +117,12 @@ function [data, varargout] = ArdyMotorFileRead(file)
 %   output "data" structure.
 %
 %   UPDATE LOG:
-%   12/14/2016 - Drew Sloan - Added more commenting for deployment to
+%   2016-12-14 - Drew Sloan - Added more commenting for deployment to
 %       customers. Change the "rat" field name to "subject".
+%   2023-03-22 - Drew Sloan - Changes the "daycode()" subfunction to
+%       "ardymotorfileread_get_daycode()" to reduce conflicts.
 %
+
 
 data = [];                                                                  %Start a data structure to receive the recordings.
 fid = fopen(file,'r');                                                      %Open the file for read access.
@@ -245,7 +249,8 @@ if version < 0                                                              %If 
     end
     if version < -1 && isfield(data,'trial') && ...
             isfield(data.trial,'starttime')                                 %If the file format version is newer than version -1 and the daycode function exists...
-        data.daycode = daycode(data.trial(1).starttime);                    %Find the daycode for this file.
+        data.daycode = ...
+            ardymotorfileread_get_daycode(data.trial(1).starttime);         %Find the daycode for this file.
     end
     
 else                                                                        %Otherwise, for all other versions...
@@ -348,12 +353,12 @@ varargout{1} = version;                                                     %Out
 
 
 %% This subfunction returns the daycode (1-365) for a given date.
-function d = daycode(date)
+function d = ardymotorfileread_get_daycode(date)
 date = datevec(date);                                                       %Convert the serial date number to a date vector.
 year = date(1);                                                             %Pull the year out of the date vector.
 month = date(2);                                                            %Pull out the month.
 day = date(3);                                                              %Pull out the day.
-if year/4 == fix(year/4);                                                   %If the year is a leap year...
+if year/4 == fix(year/4)                                                    %If the year is a leap year...
     numDays = [31 29 31 30 31 30 31 31 30 31 30 31];                        %Include 29 days in February.
 else                                                                        %Otherwise...
 	numDays = [31 28 31 30 31 30 31 31 30 31 30 31];                        %Include 28 days in February.
@@ -364,8 +369,9 @@ d = date + day;                                                             %...
 
 %% ***********************************************************************
 function [data, varargout] = ArdyMotorHeaderRead(file)
+
 %
-%ARDYMOTORHEADERREAD.m - Vulintus, Inc., 2017.
+%ArdyMotorHeaderRead.m - Vulintus, Inc., 2017.
 %
 %   ARDYMOTORHEADERREAD reads in just the file header information from the
 %   MotoTrak *.ArdyMotor behavioral session data file type.
@@ -375,7 +381,9 @@ function [data, varargout] = ArdyMotorHeaderRead(file)
 %   output "data" structure.
 %
 %   UPDATE LOG:
-%   04/17/2017 - Drew Sloan - Function first created.
+%   2017-04-17 - Drew Sloan - Function first created.
+%   2023-03-22 - Drew Sloan - Changes the "daycode()" subfunction to
+%       "ardymotorheaderread_get_daycode()" to reduce conflicts.
 %
 
 data = [];                                                                  %Start a data structure to receive the recordings.
@@ -450,7 +458,8 @@ if version < 0                                                              %If 
     
     if version < -1 && isfield(data,'trial') && ...
             isfield(data.trial,'starttime')                                 %If the file format version is newer than version -1 and the daycode function exists...
-        data.daycode = daycode(data.trial(1).starttime);                    %Find the daycode for this file.
+        data.daycode = ...
+            ardymotorheaderread_get_daycode(data.trial(1).starttime);       %Find the daycode for this file.
     end
     
 else                                                                        %Otherwise, for all other versions...
@@ -519,7 +528,7 @@ varargout{1} = version;                                                     %Out
 
 
 %% This subfunction returns the daycode (1-365) for a given date.
-function d = daycode(date)
+function d = ardymotorheaderread_get_daycode(date)
 date = datevec(date);                                                       %Convert the serial date number to a date vector.
 year = date(1);                                                             %Pull the year out of the date vector.
 month = date(2);                                                            %Pull out the month.
@@ -2002,7 +2011,7 @@ for d = 1:length(devices)                                                   %Ste
     set(obj(5),'callback',{@Export_Data,ax,obj});                           %Set the callback for the export button.
     set(fig,'userdata',plotdata);                                           %Save the plot data to the figure's 'UserData' property.
     Plot_Timeline(obj(2),[],obj,[]);                                        %Call the function to plot the session data in the figure.
-    set(fig,'ResizeFcn',{@Resize,ax,obj});                                  %Set the Resize function for the figure.
+    set(fig,'ResizeFcn',{@MotoTrak_Graphical_Analysis_Resize,ax,obj});      %Set the Resize function for the figure.
 end
 
 
@@ -2173,7 +2182,8 @@ if any(strcmpi({'image','both'},output))                                    %If 
     set(obj,'visible','on');                                                %Make all of the other figures visible again.
     i = strcmpi(get(obj,'fontweight'),'bold');                              %Find the pushbutton with the bold fontweight.
     Plot_Timeline(obj(i),[],obj,[]);                                        %Call the subfunction to plot the data by the appropriate timeline.
-    set(fig,'color',temp,'ResizeFcn',{@Resize,ax,obj});                     %Set the Resize function for the figure.
+    set(fig,'color',temp,...
+        'ResizeFcn',{@MotoTrak_Graphical_Analysis_Resize,ax,obj});          %Set the Resize function for the figure.
     drawnow;                                                                %Immediately update the figure.    
 end
 if any(strcmpi({'spreadsheet','both'},output))                              %If the user wants to save a spreadsheet...
@@ -2324,7 +2334,7 @@ end
 
 
 %% This function is called whenever the main figure is resized.
-function Resize(hObject,~,ax,obj)
+function MotoTrak_Graphical_Analysis_Resize(hObject,~,ax,obj)
 set(hObject,'units','centimeters');                                         %Set the figure units to centimeters
 pos = get(hObject,'position');                                              %Grab the current figure size, in centimeters.
 w = pos(3);                                                                 %Grab the width of the figure.
@@ -2410,17 +2420,17 @@ for f = 1:length(files)                                                     %Ste
     end
     handles.cur_trial = 1;                                                  %Set the current trial to 1.
     handles.num_trials = length(handles.trial);                             %Grab the number of trials.
-    handles = Make_GUI(handles);                                            %Create the GUI.
-    ShowTrial(handles,handles.cur_trial);                                   %Show the first trial.
-    set(handles.slider,'callback',@SliderClick);                            %Set the callback for action on the slider.
-    set(handles.savebutton,'callback',@SavePlot);                           %Set the callback for the save plot pushbutton.
+    handles = MotoTrak_Knob_Viewer_Make_GUI(handles);                       %Create the GUI.
+    MotoTrak_Knob_Viewer_Show_Trial(handles,handles.cur_trial);             %Show the first trial.
+    set(handles.slider,'callback',@MotoTrak_Knob_Viewer_Slider_Click);      %Set the callback for action on the slider.
+    set(handles.savebutton,'callback',@MotoTrak_Knob_Viewer_Save_Plot);     %Set the callback for the save plot pushbutton.
     guidata(handles.fig,handles);                                           %Pin the handles structure to the GUI.
-    set(handles.fig,'ResizeFcn',@Resize);                                   %Set the resize function for the figure.
+    set(handles.fig,'ResizeFcn',@MotoTrak_Knob_Viewer_Resize);              %Set the resize function for the figure.
 end
 
 
 %% This function displays the force and IR traces from the selected trial.
-function ShowTrial(handles,t)
+function MotoTrak_Knob_Viewer_Show_Trial(handles,t)
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 area(handles.trial(t).sample_times,handles.trial(t).ir,...
     'linewidth',2,'facecolor',[1 0.5 0.5],'parent',handles.ir_axes,...
@@ -2482,12 +2492,13 @@ if max(get(handles.force_axes,'ylim')) > handles.trial(t).thresh            %If 
         'parent',handles.force_axes,'horizontalalignment','right',...
         'verticalalignment','middle');                                      %Label the hit threshold.
 end
-ylabel('Angle (degrees)','parent',handles.force_axes,'fontsize',0.75*pos(4));%Label the force signal.
+ylabel('Angle (degrees)','parent',handles.force_axes,...
+    'fontsize',0.75*pos(4));                                                %Label the force signal.
 xlabel('Time (ms)','parent',handles.force_axes,'fontsize',0.75*pos(4));     %Label the time axis.
 
 
 %% This function executes when the user interacts with the slider.
-function SliderClick(hObject,~)
+function MotoTrak_Knob_Viewer_Slider_Click(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 handles.cur_trial = round(get(hObject,'value'));                            %Set the current trial to the value of the slider.
 if handles.cur_trial < 1                                                    %If the current trial is less than 1...
@@ -2496,12 +2507,12 @@ elseif handles.cur_trial > handles.num_trials                               %Oth
     handles.cur_trial = handles.num_trials;                                 %Set the current trial to the last trial.
 end
 set(hObject,'value',handles.cur_trial);                                     %Update the value of the slider.
-ShowTrial(handles,handles.cur_trial);                                       %Show the current trial.
+MotoTrak_Knob_Viewer_Show_Trial(handles,handles.cur_trial);                 %Show the current trial.
 guidata(hObject,handles);                                                   %Pin the handles structure back to the GUI.
 
 
 %% This function executes when the user interacts with the slider.
-function SavePlot(hObject,~)
+function MotoTrak_Knob_Viewer_Save_Plot(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 filename = [handles.file(1:end-10) '_TRIAL' ...
     num2str(handles.cur_trial,'%03.0f') '.png'];                            %Create a default filename for the PNG file.
@@ -2527,7 +2538,7 @@ set(handles.label,'backgroundcolor',temp);                                  %Set
 
 
 %% This subfunction creates the GUI.
-function handles = Make_GUI(handles)
+function handles = MotoTrak_Knob_Viewer_Make_GUI(handles)
 set(0,'units','centimeters');                                               %Set the system units to centimeters.
 pos = get(0,'screensize');                                                  %Grab the screen size.
 h = 0.8*pos(4);                                                             %Calculate the height of the figure.
@@ -2569,7 +2580,7 @@ handles.savebutton = uicontrol(handles.fig,'style','pushbutton',...
 
 
 %% This function is called whenever the main figure is resized.
-function Resize(hObject,~)
+function MotoTrak_Knob_Viewer_Resize(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 ylabel('IR Signal','parent',handles.ir_axes,'fontsize',0.75*pos(4),...
@@ -2667,17 +2678,17 @@ for f = 1:length(files)                                                     %Ste
     end
     handles.cur_trial = 1;                                                  %Set the current trial to 1.
     handles.num_trials = length(handles.trial);                             %Grab the number of trials.
-    handles = Make_GUI(handles);                                            %Create the GUI.
-    ShowTrial(handles,handles.cur_trial);                                   %Show the first trial.
-    set(handles.slider,'callback',@SliderClick);                            %Set the callback for action on the slider.
-    set(handles.savebutton,'callback',@SavePlot);                           %Set the callback for the save plot pushbutton.
+    handles = MotoTrak_Lever_Viewer_Make_GUI(handles);                      %Create the GUI.
+    MotoTrak_Lever_Viewer_Show_Trial(handles,handles.cur_trial);            %Show the first trial.
+    set(handles.slider,'callback',@MotoTrak_Lever_Viewer_Slider_Click);     %Set the callback for action on the slider.
+    set(handles.savebutton,'callback',@MotoTrak_Lever_Viewer_Save_Plot);    %Set the callback for the save plot pushbutton.
     guidata(handles.fig,handles);                                           %Pin the handles structure to the GUI.
-    set(handles.fig,'ResizeFcn',@Resize);                                   %Set the resize function for the figure.
+    set(handles.fig,'ResizeFcn',@MotoTrak_Lever_Viewer_Resize);             %Set the resize function for the figure.
 end
 
 
 %% This function displays the force and IR traces from the selected trial.
-function ShowTrial(handles,t)
+function MotoTrak_Lever_Viewer_Show_Trial(handles,t)
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 area(handles.trial(t).sample_times,handles.trial(t).ir,...
     'linewidth',2,'facecolor',[1 0.5 0.5],'parent',handles.ir_axes,...
@@ -2712,19 +2723,19 @@ text(500*handles.trial(t).hitwin,min_max(2)+0.05*range(min_max),...
     'verticalalignment','middle');                                          %Label the hit window.
 a = line([0,0],get(handles.force_axes,'ylim'),'color','k',...
     'parent',handles.force_axes,'linewidth',2,'linestyle','--');            %Draw a gray dotted line to show the start of the hit window.
-uistack(a,'top');                                                        %Move the dotted line to the bottom of the stack.
+uistack(a,'top');                                                           %Move the dotted line to the bottom of the stack.
 a = line(1000*[1,1]*handles.trial(t).hitwin,...
     get(handles.force_axes,'ylim'),'color','k',...
     'parent',handles.force_axes,'linewidth',2,'linestyle','--');            %Draw a gray dotted line to show the end of the hit window.
-uistack(a,'top');                                                        %Move the dotted line to the bottom of the stack.
+uistack(a,'top');                                                           %Move the dotted line to the bottom of the stack.
 ylabel('Angle (degrees)','parent',handles.force_axes,...
     'fontsize',0.75*pos(4));                                                %Label the force signal.
 a = line(xlim,10*[1,1],'color',[0 0.5 0],...
     'parent',handles.force_axes,'linewidth',2,'linestyle','--');            %Draw a gray dotted line to show the end of the hit window.
-uistack(a,'top');                                                        %Move the dotted line to the bottom of the stack.
+uistack(a,'top');                                                           %Move the dotted line to the bottom of the stack.
 a = line(xlim,10*[1,1],'color',[0 0.5 0],...
     'parent',handles.force_axes,'linewidth',2,'linestyle','--');            %Draw a gray dotted line to show the end of the hit window.
-uistack(a,'top');                                                        %Move the dotted line to the bottom of the stack.
+uistack(a,'top');                                                           %Move the dotted line to the bottom of the stack.
 text(-900,10.1,'Press Threshold',...
     'fontsize',0.5*pos(4),...
     'color',[0 0.5 0],...
@@ -2736,7 +2747,7 @@ xlabel('Time (ms)','parent',handles.force_axes,'fontsize',0.75*pos(4));     %Lab
 
 
 %% This function executes when the user interacts with the slider.
-function SliderClick(hObject,~)
+function MotoTrak_Lever_Viewer_Slider_Click(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 handles.cur_trial = round(get(hObject,'value'));                            %Set the current trial to the value of the slider.
 if handles.cur_trial < 1                                                    %If the current trial is less than 1...
@@ -2745,12 +2756,12 @@ elseif handles.cur_trial > handles.num_trials                               %Oth
     handles.cur_trial = handles.num_trials;                                 %Set the current trial to the last trial.
 end
 set(hObject,'value',handles.cur_trial);                                     %Update the value of the slider.
-ShowTrial(handles,handles.cur_trial);                                       %Show the current trial.
+MotoTrak_Lever_Viewer_Show_Trial(handles,handles.cur_trial);                %Show the current trial.
 guidata(hObject,handles);                                                   %Pin the handles structure back to the GUI.
 
 
 %% This function executes when the user interacts with the slider.
-function SavePlot(hObject,~)
+function MotoTrak_Lever_Viewer_Save_Plot(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 filename = [handles.file(1:end-10) '_TRIAL' ...
     num2str(handles.cur_trial,'%03.0f') '.png'];                            %Create a default filename for the PNG file.
@@ -2776,7 +2787,7 @@ set(handles.label,'backgroundcolor',temp);                                  %Set
 
 
 %% This subfunction creates the GUI.
-function handles = Make_GUI(handles)
+function handles = MotoTrak_Lever_Viewer_Make_GUI(handles)
 set(0,'units','centimeters');                                               %Set the system units to centimeters.
 pos = get(0,'screensize');                                                  %Grab the screen size.
 h = 0.8*pos(4);                                                             %Calculate the height of the figure.
@@ -2818,7 +2829,7 @@ handles.savebutton = uicontrol(handles.fig,'style','pushbutton',...
 
 
 %% This function is called whenever the main figure is resized.
-function Resize(hObject,~)
+function MotoTrak_Lever_Viewer_Resize(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 ylabel('IR Signal','parent',handles.ir_axes,'fontsize',0.75*pos(4),...
@@ -4001,17 +4012,17 @@ for f = 1:length(files)                                                     %Ste
     end
     handles.cur_trial = 1;                                                  %Set the current trial to 1.
     handles.num_trials = length(handles.trial);                             %Grab the number of trials.
-    handles = Make_GUI(handles);                                            %Create the GUI.
-    ShowTrial(handles,handles.cur_trial);                                   %Show the first trial.
-    set(handles.slider,'callback',@SliderClick);                            %Set the callback for action on the slider.
-    set(handles.savebutton,'callback',@SavePlot);                           %Set the callback for the save plot pushbutton.
+    handles = MotoTrak_Pull_Viewer_Make_GUI(handles);                       %Create the GUI.
+    MotoTrak_Pull_Viewer_Show_Trial(handles,handles.cur_trial);             %Show the first trial.
+    set(handles.slider,'callback',@MotoTrak_Pull_Viewer_Slider_Click);      %Set the callback for action on the slider.
+    set(handles.savebutton,'callback',@MotoTrak_Pull_Viewer_Save_Plot);     %Set the callback for the save plot pushbutton.
     guidata(handles.fig,handles);                                           %Pin the handles structure to the GUI.
-    set(handles.fig,'ResizeFcn',@Resize);                                   %Set the resize function for the figure.
+    set(handles.fig,'ResizeFcn',@MotoTrak_Pull_Viewer_Resize);              %Set the resize function for the figure.
 end
 
 
 %% This function displays the force and IR traces from the selected trial.
-function ShowTrial(handles,t)
+function MotoTrak_Pull_Viewer_Show_Trial(handles,t)
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 area(handles.trial(t).sample_times,handles.trial(t).ir,...
     'linewidth',2,'facecolor',[1 0.5 0.5],'parent',handles.ir_axes,...
@@ -4074,7 +4085,7 @@ xlabel('Time (ms)','parent',handles.force_axes,'fontsize',0.75*pos(4));     %Lab
 
 
 %% This function executes when the user interacts with the slider.
-function SliderClick(hObject,~)
+function MotoTrak_Pull_Viewer_Slider_Click(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 handles.cur_trial = round(get(hObject,'value'));                            %Set the current trial to the value of the slider.
 if handles.cur_trial < 1                                                    %If the current trial is less than 1...
@@ -4083,12 +4094,12 @@ elseif handles.cur_trial > handles.num_trials                               %Oth
     handles.cur_trial = handles.num_trials;                                 %Set the current trial to the last trial.
 end
 set(hObject,'value',handles.cur_trial);                                     %Update the value of the slider.
-ShowTrial(handles,handles.cur_trial);                                       %Show the current trial.
+MotoTrak_Pull_Viewer_Show_Trial(handles,handles.cur_trial);                 %Show the current trial.
 guidata(hObject,handles);                                                   %Pin the handles structure back to the GUI.
 
 
 %% This function executes when the user interacts with the slider.
-function SavePlot(hObject,~)
+function MotoTrak_Pull_Viewer_Save_Plot(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 filename = [handles.file(1:end-10) '_TRIAL' ...
     num2str(handles.cur_trial,'%03.0f') '.png'];                            %Create a default filename for the PNG file.
@@ -4122,7 +4133,7 @@ set(handles.label,'backgroundcolor',temp);                                  %Set
 
 
 %% This subfunction creates the GUI.
-function handles = Make_GUI(handles)
+function handles = MotoTrak_Pull_Viewer_Make_GUI(handles)
 set(0,'units','centimeters');                                               %Set the system units to centimeters.
 pos = get(0,'screensize');                                                  %Grab the screen size.
 h = 0.8*pos(4);                                                             %Calculate the height of the figure.
@@ -4164,7 +4175,7 @@ handles.savebutton = uicontrol(handles.fig,'style','pushbutton',...
 
 
 %% This function is called whenever the main figure is resized.
-function Resize(hObject,~)
+function MotoTrak_Pull_Viewer_Resize(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 ylabel('IR Signal','parent',handles.ir_axes,'fontsize',0.75*pos(4),...
@@ -4876,8 +4887,9 @@ function data = MotoTrakFileRead ( file )
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % MotoTrakFileRead.m
-% Date Created: 8/16/2016
-% Last date modified: 11/8/2016
+% Vulintus, Inc., 2016.
+% Date Created:         2016-08-16
+% Last date modified:   2023-03-22
 % Author: David Pruitt
 % Description: This is a first pass at some code to load in MotoTrak 2.0
 %   data files into Matlab.  These data files are generated by the C# 
@@ -5064,99 +5076,96 @@ else
     return;
 end
 
-    %Close the data file.
-    fclose(fid);
+%Close the data file.
+fclose(fid);
     
-end
 
 %% mototrak_read_trial - a subfunction that reads in individual trials from the MotoTrak session file
 
 function [trial, trial_number] = mototrak_read_trial ( fid, num_streams, version )
 
-    %Read in the trial number
-    trial_number = fread(fid, 1, 'uint32');
+%Read in the trial number
+trial_number = fread(fid, 1, 'uint32');
 
-    %Read in the start time of the trial
-    trial.start_time = fread(fid, 1, 'float64');
+%Read in the start time of the trial
+trial.start_time = fread(fid, 1, 'float64');
 
-    %Read in the outcome of the trial
-    result = fread(fid, 1, 'uint8');
-    trial.result = result;
+%Read in the outcome of the trial
+result = fread(fid, 1, 'uint8');
+trial.result = result;
 
-    %If the trial was a pause, then read the end time of the trial
-    if (result == 'P')
-        trial.end_time = fread(fid, 1, 'float64');
-    else
-        trial.end_time = NaN;
-    end
+%If the trial was a pause, then read the end time of the trial
+if (result == 'P')
+    trial.end_time = fread(fid, 1, 'float64');
+else
+    trial.end_time = NaN;
+end
 
-    %Read in the hit window duration
-    trial.hit_window_duration = fread(fid, 1, 'float32');
+%Read in the hit window duration
+trial.hit_window_duration = fread(fid, 1, 'float32');
 
-    %Read in the pre-trial duration
-    trial.pre_trial_duration = fread(fid, 1, 'float32');
+%Read in the pre-trial duration
+trial.pre_trial_duration = fread(fid, 1, 'float32');
 
-    %Read in the post-trial duration
-    trial.post_trial_duration = fread(fid, 1, 'float32');
+%Read in the post-trial duration
+trial.post_trial_duration = fread(fid, 1, 'float32');
 
-    %Read in the post-trial time-out period
-    trial.post_trial_timeout = fread(fid, 1, 'float32');
+%Read in the post-trial time-out period
+trial.post_trial_timeout = fread(fid, 1, 'float32');
 
-    %Read in the manipulandum position
-    trial.position = fread(fid, 1, 'float32');
+%Read in the manipulandum position
+trial.position = fread(fid, 1, 'float32');
 
-    %Read in the number of quantitative parameters that exist for the trial
+%Read in the number of quantitative parameters that exist for the trial
+N = fread(fid, 1, 'uint8');
+
+%Read in each quantitative parameter value
+variable_params = [];
+for i=1:N
+    %Read in the parameter value
+    param_value = fread(fid, 1, 'float32');
+    variable_params(end+1) = param_value;
+end
+trial.parameters = variable_params;
+
+%Declare an empty list of nominal parameters
+trial.nominal_parameters = {};
+
+%If this is file version -6 or later, read in any nominal parameters for this trial
+if (version == -6)
+    
+    %Read the number of nominal parameters
     N = fread(fid, 1, 'uint8');
-
-    %Read in each quantitative parameter value
-    variable_params = [];
+    
+    %Read in each nominal parameter
     for i=1:N
-        %Read in the parameter value
-        param_value = fread(fid, 1, 'float32');
-        variable_params(end+1) = param_value;
-    end
-    trial.parameters = variable_params;
-    
-    %Declare an empty list of nominal parameters
-    trial.nominal_parameters = {};
-    
-    %If this is file version -6 or later, read in any nominal parameters for this trial
-    if (version == -6)
-        
-        %Read the number of nominal parameters
-        N = fread(fid, 1, 'uint8');
-        
-        %Read in each nominal parameter
-        for i=1:N
-            n_chars = fread(fid, 1, 'uint8');
-            nominal_param_value = fread(fid, n_chars, '*char')';
-            trial.nominal_parameters{end+1} = nominal_param_value;
-        end
-        
+        n_chars = fread(fid, 1, 'uint8');
+        nominal_param_value = fread(fid, n_chars, '*char')';
+        trial.nominal_parameters{end+1} = nominal_param_value;
     end
     
-    %Read in the number of hits that occurred during this trial
-    N = fread(fid, 1, 'uint8');
+end
 
-    %Read in the timestamp of each hit
-    trial.hit_times = fread(fid, N, '*float64');
+%Read in the number of hits that occurred during this trial
+N = fread(fid, 1, 'uint8');
 
-    %Read in the number of output triggers that occurred during this
-    %trial
-    N = fread(fid, 1, 'uint8');
+%Read in the timestamp of each hit
+trial.hit_times = fread(fid, N, '*float64');
 
-    %Read in the output triggers for the trial
-    trial.output_trigger_times = fread(fid, N, '*float64');
+%Read in the number of output triggers that occurred during this
+%trial
+N = fread(fid, 1, 'uint8');
 
-    %Read in the number of samples in each data stream for this trial
-    N = fread(fid, 1, 'uint32');
+%Read in the output triggers for the trial
+trial.output_trigger_times = fread(fid, N, '*float64');
 
-    %Read in each data stream
-    trial.signal = nan(num_streams, N);
-    for i=1:num_streams
-        trial.signal(i, :) = fread(fid, N, '*float32');
-    end
-    
+%Read in the number of samples in each data stream for this trial
+N = fread(fid, 1, 'uint32');
+
+%Read in each data stream
+trial.signal = nan(num_streams, N);
+for i=1:num_streams
+    trial.signal(i, :) = fread(fid, N, '*float32');
 end
 
 

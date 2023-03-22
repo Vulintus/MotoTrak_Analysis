@@ -1,6 +1,7 @@
 function [data, varargout] = ArdyMotorHeaderRead(file)
+
 %
-%ARDYMOTORHEADERREAD.m - Vulintus, Inc., 2017.
+%ArdyMotorHeaderRead.m - Vulintus, Inc., 2017.
 %
 %   ARDYMOTORHEADERREAD reads in just the file header information from the
 %   MotoTrak *.ArdyMotor behavioral session data file type.
@@ -10,7 +11,9 @@ function [data, varargout] = ArdyMotorHeaderRead(file)
 %   output "data" structure.
 %
 %   UPDATE LOG:
-%   04/17/2017 - Drew Sloan - Function first created.
+%   2017-04-17 - Drew Sloan - Function first created.
+%   2023-03-22 - Drew Sloan - Changes the "daycode()" subfunction to
+%       "ardymotorheaderread_get_daycode()" to reduce conflicts.
 %
 
 data = [];                                                                  %Start a data structure to receive the recordings.
@@ -85,7 +88,8 @@ if version < 0                                                              %If 
     
     if version < -1 && isfield(data,'trial') && ...
             isfield(data.trial,'starttime')                                 %If the file format version is newer than version -1 and the daycode function exists...
-        data.daycode = daycode(data.trial(1).starttime);                    %Find the daycode for this file.
+        data.daycode = ...
+            ardymotorheaderread_get_daycode(data.trial(1).starttime);       %Find the daycode for this file.
     end
     
 else                                                                        %Otherwise, for all other versions...
@@ -154,7 +158,7 @@ varargout{1} = version;                                                     %Out
 
 
 %% This subfunction returns the daycode (1-365) for a given date.
-function d = daycode(date)
+function d = ardymotorheaderread_get_daycode(date)
 date = datevec(date);                                                       %Convert the serial date number to a date vector.
 year = date(1);                                                             %Pull the year out of the date vector.
 month = date(2);                                                            %Pull out the month.

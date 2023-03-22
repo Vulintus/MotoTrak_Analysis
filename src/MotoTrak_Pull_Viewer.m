@@ -47,17 +47,17 @@ for f = 1:length(files)                                                     %Ste
     end
     handles.cur_trial = 1;                                                  %Set the current trial to 1.
     handles.num_trials = length(handles.trial);                             %Grab the number of trials.
-    handles = Make_GUI(handles);                                            %Create the GUI.
-    ShowTrial(handles,handles.cur_trial);                                   %Show the first trial.
-    set(handles.slider,'callback',@SliderClick);                            %Set the callback for action on the slider.
-    set(handles.savebutton,'callback',@SavePlot);                           %Set the callback for the save plot pushbutton.
+    handles = MotoTrak_Pull_Viewer_Make_GUI(handles);                       %Create the GUI.
+    MotoTrak_Pull_Viewer_Show_Trial(handles,handles.cur_trial);             %Show the first trial.
+    set(handles.slider,'callback',@MotoTrak_Pull_Viewer_Slider_Click);      %Set the callback for action on the slider.
+    set(handles.savebutton,'callback',@MotoTrak_Pull_Viewer_Save_Plot);     %Set the callback for the save plot pushbutton.
     guidata(handles.fig,handles);                                           %Pin the handles structure to the GUI.
-    set(handles.fig,'ResizeFcn',@Resize);                                   %Set the resize function for the figure.
+    set(handles.fig,'ResizeFcn',@MotoTrak_Pull_Viewer_Resize);              %Set the resize function for the figure.
 end
 
 
 %% This function displays the force and IR traces from the selected trial.
-function ShowTrial(handles,t)
+function MotoTrak_Pull_Viewer_Show_Trial(handles,t)
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 area(handles.trial(t).sample_times,handles.trial(t).ir,...
     'linewidth',2,'facecolor',[1 0.5 0.5],'parent',handles.ir_axes,...
@@ -120,7 +120,7 @@ xlabel('Time (ms)','parent',handles.force_axes,'fontsize',0.75*pos(4));     %Lab
 
 
 %% This function executes when the user interacts with the slider.
-function SliderClick(hObject,~)
+function MotoTrak_Pull_Viewer_Slider_Click(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 handles.cur_trial = round(get(hObject,'value'));                            %Set the current trial to the value of the slider.
 if handles.cur_trial < 1                                                    %If the current trial is less than 1...
@@ -129,12 +129,12 @@ elseif handles.cur_trial > handles.num_trials                               %Oth
     handles.cur_trial = handles.num_trials;                                 %Set the current trial to the last trial.
 end
 set(hObject,'value',handles.cur_trial);                                     %Update the value of the slider.
-ShowTrial(handles,handles.cur_trial);                                       %Show the current trial.
+MotoTrak_Pull_Viewer_Show_Trial(handles,handles.cur_trial);                 %Show the current trial.
 guidata(hObject,handles);                                                   %Pin the handles structure back to the GUI.
 
 
 %% This function executes when the user interacts with the slider.
-function SavePlot(hObject,~)
+function MotoTrak_Pull_Viewer_Save_Plot(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 filename = [handles.file(1:end-10) '_TRIAL' ...
     num2str(handles.cur_trial,'%03.0f') '.png'];                            %Create a default filename for the PNG file.
@@ -168,7 +168,7 @@ set(handles.label,'backgroundcolor',temp);                                  %Set
 
 
 %% This subfunction creates the GUI.
-function handles = Make_GUI(handles)
+function handles = MotoTrak_Pull_Viewer_Make_GUI(handles)
 set(0,'units','centimeters');                                               %Set the system units to centimeters.
 pos = get(0,'screensize');                                                  %Grab the screen size.
 h = 0.8*pos(4);                                                             %Calculate the height of the figure.
@@ -210,7 +210,7 @@ handles.savebutton = uicontrol(handles.fig,'style','pushbutton',...
 
 
 %% This function is called whenever the main figure is resized.
-function Resize(hObject,~)
+function MotoTrak_Pull_Viewer_Resize(hObject,~)
 handles = guidata(hObject);                                                 %Grab the handles structure from the GUI.
 pos = get(handles.fig,'position');                                          %Grab the main figure position.
 ylabel('IR Signal','parent',handles.ir_axes,'fontsize',0.75*pos(4),...

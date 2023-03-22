@@ -1,6 +1,7 @@
 function [data, varargout] = ArdyMotorFileRead(file)
+
 %
-%ARDYMOTORFILEREAD.m - Vulintus, Inc., 2015.
+%ArdyMotorFileRead.m - Vulintus, Inc., 2015.
 %
 %   ARDYMOTORFILEREAD reads in the sensor recordings from motor behavioral
 %   tasks controlled by an Arduino board.  The data is organized into a
@@ -11,9 +12,12 @@ function [data, varargout] = ArdyMotorFileRead(file)
 %   output "data" structure.
 %
 %   UPDATE LOG:
-%   12/14/2016 - Drew Sloan - Added more commenting for deployment to
+%   2016-12-14 - Drew Sloan - Added more commenting for deployment to
 %       customers. Change the "rat" field name to "subject".
+%   2023-03-22 - Drew Sloan - Changes the "daycode()" subfunction to
+%       "ardymotorfileread_get_daycode()" to reduce conflicts.
 %
+
 
 data = [];                                                                  %Start a data structure to receive the recordings.
 fid = fopen(file,'r');                                                      %Open the file for read access.
@@ -140,7 +144,8 @@ if version < 0                                                              %If 
     end
     if version < -1 && isfield(data,'trial') && ...
             isfield(data.trial,'starttime')                                 %If the file format version is newer than version -1 and the daycode function exists...
-        data.daycode = daycode(data.trial(1).starttime);                    %Find the daycode for this file.
+        data.daycode = ...
+            ardymotorfileread_get_daycode(data.trial(1).starttime);         %Find the daycode for this file.
     end
     
 else                                                                        %Otherwise, for all other versions...
@@ -243,12 +248,12 @@ varargout{1} = version;                                                     %Out
 
 
 %% This subfunction returns the daycode (1-365) for a given date.
-function d = daycode(date)
+function d = ardymotorfileread_get_daycode(date)
 date = datevec(date);                                                       %Convert the serial date number to a date vector.
 year = date(1);                                                             %Pull the year out of the date vector.
 month = date(2);                                                            %Pull out the month.
 day = date(3);                                                              %Pull out the day.
-if year/4 == fix(year/4);                                                   %If the year is a leap year...
+if year/4 == fix(year/4)                                                    %If the year is a leap year...
     numDays = [31 29 31 30 31 30 31 31 30 31 30 31];                        %Include 29 days in February.
 else                                                                        %Otherwise...
 	numDays = [31 28 31 30 31 30 31 31 30 31 30 31];                        %Include 28 days in February.
