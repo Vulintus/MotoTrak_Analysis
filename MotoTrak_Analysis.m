@@ -1,6 +1,6 @@
 function MotoTrak_Analysis
 
-%Collated: 03/22/2023, 17:49:38
+%Collated: 2023-09-11, 11:02:00
 
 MotoTrak_Analysis_Startup;                                                  %Call the startup function.
 
@@ -2891,6 +2891,8 @@ fields.optional =   {   'BOOTH';
                         'TRIALS IN FIRST 15 MINUTES';
                         'HIT RATE (%) IN FIRST 10 TRIALS';
                         'HIT RATE (%) IN FIRST 50 TRIALS';
+                        'HIT RATE (%) IN LAST 10 TRIALS';
+                        'HIT RATE (%) IN LAST 50 TRIALS';
                         'MAX HITS IN ANY 5 MINUTES';
                         'MAX TRIALS IN ANY 5 MINUTES';                        
                         'MAX HIT RATE IN ANY 5 MINUTES';
@@ -2918,7 +2920,12 @@ fields.pull =       {   'MEAN PEAK FORCE (gm)';
                         'MEAN PEAK FORCE (gm) IN FIRST 10 TRIALS';
                         'MEDIAN PEAK FORCE (gm) IN FIRST 10 TRIALS'                        
                         'MEAN PEAK FORCE (gm) IN FIRST 50 TRIALS';
-                        'MEDIAN PEAK FORCE (gm) IN FIRST 50 TRIALS'};       %List the optional columns that apply to only the isometric pull tasks.
+                        'MEDIAN PEAK FORCE (gm) IN FIRST 50 TRIALS';
+                        'MEAN PEAK FORCE (gm) IN LAST 10 TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN LAST 10 TRIALS'                        
+                        'MEAN PEAK FORCE (gm) IN LAST 50 TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN LAST 50 TRIALS';
+                    };                                                      %List the optional columns that apply to only the isometric pull tasks.
 fields.pull = sort(fields.pull);                                            %Sort the pull task fields alphabetically.
                         
 fields.knob =       {   'MEAN PEAK ANGLE (degrees)';
@@ -3552,6 +3559,22 @@ for d = 1:length(devices)                                                   %Ste
                             fprintf(fid(d),'%1.1f%%',...
                                 100*nanmean(data(s).outcome == 'H'));       %Print the hit rate.
                         end
+                    case 'HIT RATE (%) IN LAST 10 TRIALS'
+                        if numel(data(s).outcome) > 10                      %If there's more than 10 trials...
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(end-9:end) == 'H')); %Print the hit rate for the first 10 trials.
+                        else                                                %Otherwise, if there's 10 trials or fewer...
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome == 'H'));       %Print the hit rate.
+                        end
+                    case 'HIT RATE (%) IN LAST 50 TRIALS'
+                        if numel(data(s).outcome) > 50                      %If there's more than 50 trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(end-49:end) == 'H')); %Print the hit rate for the first 50 trials.
+                        else                                                %Otherwise, if there's 50 trials or fewer...
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome == 'H'));       %Print the hit rate.
+                        end
                     case 'INITATION TO HIT LATENCY (s)'
                         fprintf(fid(d),'%1.3f',nanmean(data(s).hittime));   %Print the mean initiation-to-hit latency.
                     case 'LATENCY TO PEAK ANGLE (s)'
@@ -3634,6 +3657,20 @@ for d = 1:length(devices)                                                   %Ste
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',nanmean(data(s).peak));  %Print the mean signal peaks for each session.
                         end
+                    case 'MEAN PEAK FORCE (gm) IN LAST 10 TRIALS'
+                        if numel(data(s).peak) > 10                         %If there were more than 10 trials...
+                            fprintf(fid(d),'%1.3f',...
+                                nanmean(data(s).peak(end-9:end)));          %Print the mean signal peaks for the first 10 trials of each session.
+                        else                                                %Otherwise...
+                            fprintf(fid(d),'%1.3f',nanmean(data(s).peak));  %Print the mean signal peaks for each session.
+                        end                        
+                    case 'MEAN PEAK FORCE (gm) IN LAST 50 TRIALS'
+                        if numel(data(s).peak) > 50                         %If there were more than 50 trials...
+                            fprintf(fid(d),'%1.3f',...
+                                nanmean(data(s).peak(end-49:end)));         %Print the mean signal peaks for the first 50 trials of each session.
+                        else                                                %Otherwise...
+                            fprintf(fid(d),'%1.3f',nanmean(data(s).peak));  %Print the mean signal peaks for each session.
+                        end
                     case 'MEAN PEAK IMPULSE (gm/s)'
                         fprintf(fid(d),'%1.3f',nanmean(data(s).impulse));   %Print the mean signal impulse for each session.
                     case 'MEAN PEAK ROTATIONAL VELOCITY (degrees/s)'
@@ -3676,6 +3713,22 @@ for d = 1:length(devices)                                                   %Ste
                         if numel(data(s).peak) > 50                         %If there were more than 50 trials...
                             fprintf(fid(d),'%1.3f',...
                                 nanmedian(data(s).peak(1:50)));             %Print the mean signal peaks for the first 50 trials of each session.
+                        else                                                %Otherwise...
+                            fprintf(fid(d),'%1.3f',...
+                                nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN LAST 10 TRIALS'
+                        if numel(data(s).peak) > 10                         %If there were more than 10 trials...
+                            fprintf(fid(d),'%1.3f',...
+                                nanmedian(data(s).peak(end-9:end)));        %Print the mean signal peaks for the first 10 trials of each session.
+                        else                                                %Otherwise...
+                            fprintf(fid(d),'%1.3f',...
+                                nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN LAST 50 TRIALS'
+                        if numel(data(s).peak) > 50                         %If there were more than 50 trials...
+                            fprintf(fid(d),'%1.3f',...
+                                nanmedian(data(s).peak(end-49:end)));       %Print the mean signal peaks for the first 50 trials of each session.
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',...
                                 nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.

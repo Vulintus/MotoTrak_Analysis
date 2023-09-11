@@ -17,7 +17,7 @@
 
 https://github.com/Vulintus/MotoTrak_Analysis
 
-Updated 2023-03-22, 17:54 PST.</param.description>
+Updated 2023-09-11, 11:03 MST.</param.description>
     <param.screenshot>H:\My Drive\Vulintus Software (Drew)\Vulintus Icons and Splash Screens\images\MotoTrak\mototrak_install_splash_screen.png</param.screenshot>
     <param.guid />
     <param.installpath.string>\Vulintus\MotoTrak_Analysis\</param.installpath.string>
@@ -36,7 +36,7 @@ Updated 2023-03-22, 17:54 PST.</param.description>
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>mototrak_analysis_v1p20_installer_v1p20_win64_20230322</param.web.mcr.name>
+    <param.web.mcr.name>mototrak_analysis_v1p20_installer_v1p20_win64_20230911</param.web.mcr.name>
     <param.package.mcr.name>Mototrak_Analysis_Installer_v1p14_win64_includes_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
     <param.windows.command.prompt>false</param.windows.command.prompt>
@@ -93,14 +93,14 @@ Updated 2023-03-22, 17:54 PST.</param.description>
       <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_to_ArdyMotor.m</file>
       <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrakHeaderRead.m</file>
       <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V2\MotoTrak\Matlab Code\MotoTrakFileRead.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Vulintus_Set_AppData_Path.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Behavioral Subfunctions\Vulintus_Write_Config.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\big_waitbar.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\boxsmooth.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\cprintf.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\file_miner.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\uigetdate.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common MATLAB Scripts\Vulintus Common Toolbox\Vulintus_Load_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Behavioral Subfunctions\Vulintus_Set_AppData_Path.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Behavioral Subfunctions\Vulintus_Write_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\big_waitbar.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\boxsmooth.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\cprintf.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\file_miner.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\uigetdate.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\Vulintus_Load_Config.m</file>
     </fileset.depfun>
     <build-deliverables>
       <file location="${PROJECT_ROOT}\testing" name="readme.txt" optional="true">H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled\testing\readme.txt</file>
