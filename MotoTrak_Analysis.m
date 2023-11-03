@@ -1,6 +1,6 @@
 function MotoTrak_Analysis
 
-%Collated: 2023-09-11, 11:02:00
+%Collated: 2023-11-03, 10:57:17
 
 MotoTrak_Analysis_Startup;                                                  %Call the startup function.
 
@@ -2893,6 +2893,16 @@ fields.optional =   {   'BOOTH';
                         'HIT RATE (%) IN FIRST 50 TRIALS';
                         'HIT RATE (%) IN LAST 10 TRIALS';
                         'HIT RATE (%) IN LAST 50 TRIALS';
+                        'HIT RATE (%) IN 0-10% OF TRIALS';
+                        'HIT RATE (%) IN 10-20% OF TRIALS';
+                        'HIT RATE (%) IN 20-30% OF TRIALS';
+                        'HIT RATE (%) IN 30-40% OF TRIALS';
+                        'HIT RATE (%) IN 40-50% OF TRIALS';
+                        'HIT RATE (%) IN 50-60% OF TRIALS';
+                        'HIT RATE (%) IN 60-70% OF TRIALS';
+                        'HIT RATE (%) IN 70-80% OF TRIALS';
+                        'HIT RATE (%) IN 80-90% OF TRIALS';
+                        'HIT RATE (%) IN 90-100% OF TRIALS';
                         'MAX HITS IN ANY 5 MINUTES';
                         'MAX TRIALS IN ANY 5 MINUTES';                        
                         'MAX HIT RATE IN ANY 5 MINUTES';
@@ -2925,6 +2935,26 @@ fields.pull =       {   'MEAN PEAK FORCE (gm)';
                         'MEDIAN PEAK FORCE (gm) IN LAST 10 TRIALS'                        
                         'MEAN PEAK FORCE (gm) IN LAST 50 TRIALS';
                         'MEDIAN PEAK FORCE (gm) IN LAST 50 TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 0-10% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 10-20% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 20-30% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 30-40% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 40-50% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 50-60% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 60-70% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 70-80% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 80-90% OF TRIALS';
+                        'MEAN PEAK FORCE (gm) IN 90-100% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 0-10% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 10-20% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 20-30% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 30-40% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 40-50% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 50-60% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 60-70% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 70-80% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 80-90% OF TRIALS';
+                        'MEDIAN PEAK FORCE (gm) IN 90-100% OF TRIALS';
                     };                                                      %List the optional columns that apply to only the isometric pull tasks.
 fields.pull = sort(fields.pull);                                            %Sort the pull task fields alphabetically.
                         
@@ -3386,6 +3416,7 @@ for d = 1:length(devices)                                                   %Ste
     selected_fields = output.(devices{d});                                  %Grab the currently-selected fields.
     all_fields = vertcat(fields.mandatory, fields.optional,...
         fields.(devices{d}));                                               %Create a list of all available fields for this device.
+    selected_fields = intersect(selected_fields,all_fields);                %Kick out any fields in the configuration that are no longer available.
     fig = Selection_GUI(selected_fields,fields.mandatory,all_fields,...
         devices{d});                                                        %Call the subfunction to create the selection GUI.
     uiwait(fig);                                                            %Wait for the user to make a selection.
@@ -3575,6 +3606,96 @@ for d = 1:length(devices)                                                   %Ste
                             fprintf(fid(d),'%1.1f%%',...
                                 100*nanmean(data(s).outcome == 'H'));       %Print the hit rate.
                         end
+                    case 'HIT RATE (%) IN 0-10% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.1*n_trials);                        %Find the 10% timepoint trial.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(1:t) == 'H'));  %Print the hit rate for the first 10% of trials.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 10-20% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.1*n_trials):round(0.2*n_trials);    %Find the 10% and 20% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 10-20% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 20-30% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.2*n_trials):round(0.3*n_trials);    %Find the 20% and 30% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 20-30% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 30-40% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.3*n_trials):round(0.4*n_trials);    %Find the 30% and 40% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 30-40% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 40-50% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.4*n_trials):round(0.5*n_trials);    %Find the 40% and 50% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 40-50% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 50-60% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.5*n_trials):round(0.6*n_trials);    %Find the 50% and 60% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 50-60% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 60-70% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.6*n_trials):round(0.7*n_trials);    %Find the 60% and 70% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 60-70% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 70-80% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.7*n_trials):round(0.8*n_trials);    %Find the 70% and 80% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 70-80% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 80-90% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.8*n_trials):round(0.9*n_trials);    %Find the 80% and 90% timepoint trials.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t) == 'H'));    %Print the hit rate for the 80-90% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'HIT RATE (%) IN 90-100% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.9*n_trials);                        %Find the 90% timepoint trial.
+                            fprintf(fid(d),'%1.1f%%',...
+                                100*nanmean(data(s).outcome(t:end) == 'H'));    %Print the hit rate for the last 10% of trials.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
                     case 'INITATION TO HIT LATENCY (s)'
                         fprintf(fid(d),'%1.3f',nanmean(data(s).hittime));   %Print the mean initiation-to-hit latency.
                     case 'LATENCY TO PEAK ANGLE (s)'
@@ -3671,6 +3792,96 @@ for d = 1:length(devices)                                                   %Ste
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',nanmean(data(s).peak));  %Print the mean signal peaks for each session.
                         end
+                    case 'MEAN PEAK FORCE (gm) IN 0-10% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.1*n_trials);                        %Find the 10% timepoint trial.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(1:t)));                %Print the mean signal peaks for the first 10% of trials.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 10-20% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.1*n_trials):round(0.2*n_trials);    %Find the 10% and 20% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 10-20% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 20-30% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.2*n_trials):round(0.3*n_trials);    %Find the 20% and 30% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 20-30% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 30-40% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.3*n_trials):round(0.4*n_trials);    %Find the 30% and 40% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 30-40% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 40-50% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.4*n_trials):round(0.5*n_trials);    %Find the 40% and 50% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 40-50% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 50-60% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.5*n_trials):round(0.6*n_trials);    %Find the 50% and 60% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 50-60% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 60-70% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.6*n_trials):round(0.7*n_trials);    %Find the 60% and 70% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 60-70% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 70-80% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.7*n_trials):round(0.8*n_trials);    %Find the 70% and 80% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 70-80% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 80-90% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.8*n_trials):round(0.9*n_trials);    %Find the 80% and 90% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t)));                  %Print the mean signal peaks for the 80-90% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEAN PEAK FORCE (gm) IN 90-100% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.9*n_trials);                        %Find the 90% timepoint trial.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmean(data(s).peak(t:end)));              %Print the mean signal peaks for the  last 10% of trials.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
                     case 'MEAN PEAK IMPULSE (gm/s)'
                         fprintf(fid(d),'%1.3f',nanmean(data(s).impulse));   %Print the mean signal impulse for each session.
                     case 'MEAN PEAK ROTATIONAL VELOCITY (degrees/s)'
@@ -3704,34 +3915,124 @@ for d = 1:length(devices)                                                   %Ste
                     case 'MEDIAN PEAK FORCE (gm) IN FIRST 10 TRIALS'
                         if numel(data(s).peak) > 10                         %If there were more than 10 trials...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak(1:10)));             %Print the mean signal peaks for the first 10 trials of each session.
+                                nanmedian(data(s).peak(1:10)));             %Print the median signal peaks for the first 10 trials of each session.
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.
+                                nanmedian(data(s).peak));                   %Print the median signal peaks for each session.
                         end
                     case 'MEDIAN PEAK FORCE (gm) IN FIRST 50 TRIALS'
                         if numel(data(s).peak) > 50                         %If there were more than 50 trials...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak(1:50)));             %Print the mean signal peaks for the first 50 trials of each session.
+                                nanmedian(data(s).peak(1:50)));             %Print the median signal peaks for the first 50 trials of each session.
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.
+                                nanmedian(data(s).peak));                   %Print the median signal peaks for each session.
                         end
                     case 'MEDIAN PEAK FORCE (gm) IN LAST 10 TRIALS'
                         if numel(data(s).peak) > 10                         %If there were more than 10 trials...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak(end-9:end)));        %Print the mean signal peaks for the first 10 trials of each session.
+                                nanmedian(data(s).peak(end-9:end)));        %Print the median signal peaks for the first 10 trials of each session.
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.
+                                nanmedian(data(s).peak));                   %Print the median signal peaks for each session.
                         end
                     case 'MEDIAN PEAK FORCE (gm) IN LAST 50 TRIALS'
                         if numel(data(s).peak) > 50                         %If there were more than 50 trials...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak(end-49:end)));       %Print the mean signal peaks for the first 50 trials of each session.
+                                nanmedian(data(s).peak(end-49:end)));       %Print the median signal peaks for the first 50 trials of each session.
                         else                                                %Otherwise...
                             fprintf(fid(d),'%1.3f',...
-                                nanmedian(data(s).peak));                   %Print the mean signal peaks for each session.
+                                nanmedian(data(s).peak));                   %Print the median signal peaks for each session.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 0-10% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.1*n_trials);                        %Find the 10% timepoint trial.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(1:t)));                %Print the median signal peaks for the first 10% of trials.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 10-20% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.1*n_trials):round(0.2*n_trials);    %Find the 10% and 20% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 10-20% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 20-30% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.2*n_trials):round(0.3*n_trials);    %Find the 20% and 30% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 20-30% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 30-40% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.3*n_trials):round(0.4*n_trials);    %Find the 30% and 40% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 30-40% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 40-50% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.4*n_trials):round(0.5*n_trials);    %Find the 40% and 50% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 40-50% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 50-60% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.5*n_trials):round(0.6*n_trials);    %Find the 50% and 60% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 50-60% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 60-70% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.6*n_trials):round(0.7*n_trials);    %Find the 60% and 70% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 60-70% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 70-80% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.7*n_trials):round(0.8*n_trials);    %Find the 70% and 80% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 70-80% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 80-90% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.8*n_trials):round(0.9*n_trials);    %Find the 80% and 90% timepoint trials.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t)));                  %Print the median signal peaks for the 80-90% of trials period.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
+                        end
+                    case 'MEDIAN PEAK FORCE (gm) IN 90-100% OF TRIALS'
+                        n_trials = numel(data(s).outcome);                  %Grab the number of trials.
+                        if n_trials >= 10                                   %If there's 10 or more trials...
+                            t = round(0.9*n_trials);                        %Find the 90% timepoint trial.
+                            fprintf(fid(d),'%1.3f%%',...
+                                nanmedian(data(s).peak(t:end)));              %Print the median signal peaks for the  last 10% of trials.
+                        else                                                %Otherwise, if there's fewer than 10 trials...
+                            fprintf(fid(d),'NaN');                          %Print a NaN.
                         end
                     case 'MEDIAN HIT THRESHOLD (gm)'
                         fprintf(fid(d),'%1.3f',nanmedian(data(s).thresh));  %Print the median hit threshold.   
@@ -5574,9 +5875,11 @@ txt = uicontrol(fig,'style','text','units','centimeters',...
     'string',txtstr);                                                       %Create a text object to show the current point in the wait process.  
 set(0,'units',orig_units);                                                  %Set the system units back to the original units.
 
+waitbar.type = 'big_waitbar';                                               %Set the structure type.
 waitbar.title = @(str)SetTitle(fig,str);                                    %Set the function for changing the waitbar title.
 waitbar.string = @(str)SetString(fig,txt,str);                              %Set the function for changing the waitbar string.
-waitbar.value = @(val)SetVal(fig,obj,val);                                  %Set the function for changing waitbar value.
+% waitbar.value = @(val)SetVal(fig,obj,val);                                  %Set the function for changing waitbar value.
+waitbar.value = @(varargin)GetSetVal(fig,obj,varargin{:});                  %Set the function for reading/setting the waitbar value.
 waitbar.color = @(val)SetColor(fig,obj,val);                                %Set the function for changing waitbar color.
 waitbar.close = @()CloseWaitbar(fig);                                       %Set the function for closing the waitbar.
 waitbar.isclosed = @()WaitbarIsClosed(fig);                                 %Set the function for checking whether the waitbar figure is closed.
@@ -5604,19 +5907,41 @@ else                                                                        %Oth
 end
 
 
-%% This function sets the current value of the waitbar.
-function SetVal(fig,obj,val)
+% %% This function sets the current value of the waitbar.
+% function SetVal(fig,obj,val)
+% if ishandle(fig)                                                            %If the waitbar figure is still open...
+%     if val > 1                                                              %If the specified value is greater than 1...
+%         val = 1;                                                            %Set the value to 1.
+%     elseif val < 0                                                          %If the specified value is less than 0...
+%         val = 0;                                                            %Set the value to 0.
+%     end
+%     set(obj,'xdata',val*[0 1 1 0 0]);                                       %Set the patch object to extend to the specified value.
+%     drawnow;                                                                %Immediately update the figure.
+% else                                                                        %Otherwise...
+%     warning('Cannot update the waitbar figure. It has been closed.');       %Show a warning.
+% end
+
+
+%% This function reads/sets the waitbar value.
+function val = GetSetVal(fig,obj,varargin)
 if ishandle(fig)                                                            %If the waitbar figure is still open...
-    if val > 1                                                              %If the specified value is greater than 1...
-        val = 1;                                                            %Set the value to 1.
-    elseif val < 0                                                          %If the specified value is less than 0...
-        val = 0;                                                            %Set the value to 0.
+    if nargin > 2                                                           %If a value was passed.
+        val = varargin{1};                                                  %Grab the specified value.
+        if val > 1                                                          %If the specified value is greater than 1...
+            val = 1;                                                        %Set the value to 1.
+        elseif val < 0                                                      %If the specified value is less than 0...
+            val = 0;                                                        %Set the value to 0.
+        end
+        set(obj,'xdata',val*[0 1 1 0 0]);                                   %Set the patch object to extend to the specified value.
+        drawnow;                                                            %Immediately update the figure.
+    else                                                                    %Otherwise...
+        val = get(obj,'xdata');                                             %Grab the x-coordinates from the patch object.
+        val = val(2);                                                       %Return the right-hand x-coordinate.
     end
-    set(obj,'xdata',val*[0 1 1 0 0]);                                       %Set the patch object to extend to the specified value.
-    drawnow;                                                                %Immediately update the figure.
 else                                                                        %Otherwise...
-    warning('Cannot update the waitbar figure. It has been closed.');       %Show a warning.
+    warning('Cannot access the waitbar figure. It has been closed.');       %Show a warning.
 end
+    
 
 
 %% This function sets the color of the waitbar.

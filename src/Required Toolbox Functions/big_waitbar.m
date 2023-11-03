@@ -58,9 +58,11 @@ txt = uicontrol(fig,'style','text','units','centimeters',...
     'string',txtstr);                                                       %Create a text object to show the current point in the wait process.  
 set(0,'units',orig_units);                                                  %Set the system units back to the original units.
 
+waitbar.type = 'big_waitbar';                                               %Set the structure type.
 waitbar.title = @(str)SetTitle(fig,str);                                    %Set the function for changing the waitbar title.
 waitbar.string = @(str)SetString(fig,txt,str);                              %Set the function for changing the waitbar string.
-waitbar.value = @(val)SetVal(fig,obj,val);                                  %Set the function for changing waitbar value.
+% waitbar.value = @(val)SetVal(fig,obj,val);                                  %Set the function for changing waitbar value.
+waitbar.value = @(varargin)GetSetVal(fig,obj,varargin{:});                  %Set the function for reading/setting the waitbar value.
 waitbar.color = @(val)SetColor(fig,obj,val);                                %Set the function for changing waitbar color.
 waitbar.close = @()CloseWaitbar(fig);                                       %Set the function for closing the waitbar.
 waitbar.isclosed = @()WaitbarIsClosed(fig);                                 %Set the function for checking whether the waitbar figure is closed.
@@ -88,19 +90,41 @@ else                                                                        %Oth
 end
 
 
-%% This function sets the current value of the waitbar.
-function SetVal(fig,obj,val)
+% %% This function sets the current value of the waitbar.
+% function SetVal(fig,obj,val)
+% if ishandle(fig)                                                            %If the waitbar figure is still open...
+%     if val > 1                                                              %If the specified value is greater than 1...
+%         val = 1;                                                            %Set the value to 1.
+%     elseif val < 0                                                          %If the specified value is less than 0...
+%         val = 0;                                                            %Set the value to 0.
+%     end
+%     set(obj,'xdata',val*[0 1 1 0 0]);                                       %Set the patch object to extend to the specified value.
+%     drawnow;                                                                %Immediately update the figure.
+% else                                                                        %Otherwise...
+%     warning('Cannot update the waitbar figure. It has been closed.');       %Show a warning.
+% end
+
+
+%% This function reads/sets the waitbar value.
+function val = GetSetVal(fig,obj,varargin)
 if ishandle(fig)                                                            %If the waitbar figure is still open...
-    if val > 1                                                              %If the specified value is greater than 1...
-        val = 1;                                                            %Set the value to 1.
-    elseif val < 0                                                          %If the specified value is less than 0...
-        val = 0;                                                            %Set the value to 0.
+    if nargin > 2                                                           %If a value was passed.
+        val = varargin{1};                                                  %Grab the specified value.
+        if val > 1                                                          %If the specified value is greater than 1...
+            val = 1;                                                        %Set the value to 1.
+        elseif val < 0                                                      %If the specified value is less than 0...
+            val = 0;                                                        %Set the value to 0.
+        end
+        set(obj,'xdata',val*[0 1 1 0 0]);                                   %Set the patch object to extend to the specified value.
+        drawnow;                                                            %Immediately update the figure.
+    else                                                                    %Otherwise...
+        val = get(obj,'xdata');                                             %Grab the x-coordinates from the patch object.
+        val = val(2);                                                       %Return the right-hand x-coordinate.
     end
-    set(obj,'xdata',val*[0 1 1 0 0]);                                       %Set the patch object to extend to the specified value.
-    drawnow;                                                                %Immediately update the figure.
 else                                                                        %Otherwise...
-    warning('Cannot update the waitbar figure. It has been closed.');       %Show a warning.
+    warning('Cannot access the waitbar figure. It has been closed.');       %Show a warning.
 end
+    
 
 
 %% This function sets the color of the waitbar.
