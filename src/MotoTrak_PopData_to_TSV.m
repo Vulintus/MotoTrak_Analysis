@@ -32,16 +32,26 @@ fields.optional =   {   'BOOTH';
                         'HIT RATE (%)';
                         'MISSES';
                         'MANUAL FEEDS';
-                        'INITATION TO HIT LATENCY (s)';
-                        'HITS IN FIRST 5 MINUTES';
+                        'INITATION TO HIT LATENCY (s)';                        
                         'TRIALS IN FIRST 5 MINUTES';
-                        'HIT RATE (%) IN FIRST 5 MINUTES';
-                        'HIT RATE (%) IN FIRST 15 MINUTES';
-                        'HITS IN FIRST 10 MINUTES';
                         'TRIALS IN FIRST 10 MINUTES';
-                        'HIT RATE (%) IN FIRST 10 MINUTES';
-                        'HITS IN FIRST 15 MINUTES';
                         'TRIALS IN FIRST 15 MINUTES';
+                        'TRIALS IN 0-2 MINUTES';
+                        'TRIALS IN 2-4 MINUTES';
+                        'TRIALS IN 4-6 MINUTES';
+                        'TRIALS IN 6-8 MINUTES';
+                        'TRIALS IN 8-10 MINUTES';
+                        'TRIALS IN 10-12 MINUTES';
+                        'TRIALS IN 12-14 MINUTES';
+                        'TRIALS IN 14-16 MINUTES';
+                        'TRIALS IN 16-18 MINUTES';
+                        'TRIALS IN 18-20 MINUTES';
+                        'HITS IN FIRST 5 MINUTES';
+                        'HITS IN FIRST 10 MINUTES';
+                        'HITS IN FIRST 15 MINUTES';
+                        'HIT RATE (%) IN FIRST 5 MINUTES';
+                        'HIT RATE (%) IN FIRST 10 MINUTES';
+                        'HIT RATE (%) IN FIRST 15 MINUTES';
                         'HIT RATE (%) IN FIRST 10 TRIALS';
                         'HIT RATE (%) IN FIRST 50 TRIALS';
                         'HIT RATE (%) IN LAST 10 TRIALS';
@@ -75,7 +85,7 @@ fields.pull =       {   'MEAN PEAK FORCE (gm)';
                         'FATIGUE RATIO (LAST 10/FIRST 10)';
                         'MEAN PULL DURATION (s)';
                         'MEAN PEAK IMPULSE (gm/s)';
-                        'NUMBER OF ATTEMPTS';
+                        'NUMBER OF ATTEMPTS';                        
                         'MEAN SUB-CEILING ATTEMPT FORCE (gm)';
                         'MEAN SUB-CEILING PEAK FORCE (gm)';
                         'MEAN SUCCESSFUL ATTEMPT PEAK FORCE (gm)';
@@ -545,7 +555,10 @@ waitbar.close();                                                            %Clo
 output = [];                                                                %Create a structure to hold the output fields for each device.
 devices = unique({data.device});                                            %Grab the unique device names across all sessions.
 for d = 1:length(devices)                                                   %Step through each device...
-    filename = fullfile(handles.config_path, [devices{d} '_popdata_tsv.config']);    %Create the expected configuration filename.
+    output.(devices{d}) = fields.mandatory;                                 %Pre-populate the output with only the mandatory fields.
+    f = numel(output.(devices{d}));                                         %Start the field count with the number of mandatory fields.
+    filename = fullfile(handles.config_path,...
+        [devices{d} '_popdata_tsv.config']);                                %Create the expected configuration filename.
     if exist(filename,'file')                                               %If a configuration file already exists for this device type...
         fid = fopen(filename,'rt');                                         %Open the configuration file for reading.
         txt = fread(fid,'*char');                                           %Read in the data as characters.
@@ -554,12 +567,11 @@ for d = 1:length(devices)                                                   %Ste
         for j = 1:length(a) - 1                                             %Step through all lines in the data.
             ln = txt(a(j)+1:a(j+1)-1)';                                     %Grab the line of text.
             ln(ln == 0) = [];                                               %Kick out all null characters.
-            if ~isempty(ln)                                                 %If the area any non-null characters in the line...
-                output.(devices{d}){j,1} = ln;                              %Each line will be a field name.
+            if ~isempty(ln) && ~any(strcmpi(output.(devices{d}),ln))        %If ther are any non-null characters in the line...
+                f = f + 1;                                                  %Increment the field count.
+                output.(devices{d}){f,1} = ln;                              %Each line will be a field name.
             end
         end
-    else                                                                    %Otherwise...
-        output.(devices{d}) = fields.mandatory;                             %Pre-populate the output with only the mandatory fields.
     end
 end
 
@@ -569,7 +581,13 @@ for d = 1:length(devices)                                                   %Ste
     selected_fields = output.(devices{d});                                  %Grab the currently-selected fields.
     all_fields = vertcat(fields.mandatory, fields.optional,...
         fields.(devices{d}));                                               %Create a list of all available fields for this device.
-    selected_fields = intersect(selected_fields,all_fields);                %Kick out any fields in the configuration that are no longer available.
+    keepers = ones(size(selected_fields));                                  %Keep track of which fields to keep.
+    for i = 1:length(selected_fields)                                       %Step through each field.
+        if ~any(strcmpi(all_fields,selected_fields{i}))                     %If the field is no longer available...
+            keepers(i) = 0;                                                 %Mark the field for exclusions.
+        end
+    end
+    selected_fields(keepers == 0) = [];                                     %Kick out any fields in the configuration that are no longer available.
     fig = Selection_GUI(selected_fields,fields.mandatory,all_fields,...
         devices{d});                                                        %Call the subfunction to create the selection GUI.
     uiwait(fig);                                                            %Wait for the user to make a selection.
@@ -1261,6 +1279,36 @@ for d = 1:length(devices)                                                   %Ste
                         else                                                %Otherwise, if the trial didn't last 15 minutes.
                             fprintf(fid(d),'NaN');                          %Print a NaN.
                         end   
+                    case 'TRIALS IN 0-2 MINUTES'
+                        num_trials = sum(times >= 0 & times < 120);         %Count the number of trials in minutes 0-2.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 0-2.
+                    case 'TRIALS IN 2-4 MINUTES'
+                        num_trials = sum(times >= 120 & times < 240);       %Count the number of trials in minutes 2-4.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 2-4.
+                    case 'TRIALS IN 4-6 MINUTES'
+                        num_trials = sum(times >= 240 & times < 360);       %Count the number of trials in minutes 4-6.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 4-6.
+                    case 'TRIALS IN 6-8 MINUTES'
+                        num_trials = sum(times >= 360 & times < 480);       %Count the number of trials in minutes 6-8.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 6-8.
+                    case 'TRIALS IN 8-10 MINUTES'
+                        num_trials = sum(times >= 480 & times < 600);       %Count the number of trials in minutes 8-10.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 8-10.
+                    case 'TRIALS IN 10-12 MINUTES'
+                        num_trials = sum(times >= 600 & times < 720);       %Count the number of trials in minutes 10-12.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 10-12.
+                    case 'TRIALS IN 12-14 MINUTES'
+                        num_trials = sum(times >= 720 & times < 840);       %Count the number of trials in minutes 12-14.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 12-14.
+                    case 'TRIALS IN 14-16 MINUTES'
+                        num_trials = sum(times >= 840 & times < 960);       %Count the number of trials in minutes 14-16.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 14-16.
+                    case 'TRIALS IN 16-18 MINUTES'
+                        num_trials = sum(times >= 960 & times < 1080);      %Count the number of trials in minutes 16-18.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 16-18.
+                    case 'TRIALS IN 18-20 MINUTES'
+                        num_trials = sum(times >= 1080 & times < 1200);     %Count the number of trials in minutes 18-20.
+                        fprintf(fid(d),'%1.0f',num_trials);                 %Print the number of trials in minutes 18-20.
                     case 'TURN ATTEMPTS PER TRIAL'
                         fprintf(fid(d),'%1.3f',...
                             nanmean(data(s).pre_hit_attempts));             %Print the mean number of attempts before a hit.
