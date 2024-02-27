@@ -17,7 +17,7 @@
 
 https://github.com/Vulintus/MotoTrak_Analysis
 
-Updated 2023-11-03, 13:34 MST.</param.description>
+Updated 2024-02-27, 16:17 MST.</param.description>
     <param.screenshot>H:\My Drive\Vulintus Software (Drew)\Vulintus Icons and Splash Screens\images\MotoTrak\mototrak_install_splash_screen.png</param.screenshot>
     <param.guid />
     <param.installpath.string>\Vulintus\MotoTrak_Analysis\</param.installpath.string>
@@ -36,7 +36,7 @@ Updated 2023-11-03, 13:34 MST.</param.description>
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>mototrak_analysis_v1p20_installer_v1p20_win64_20231103</param.web.mcr.name>
+    <param.web.mcr.name>mototrak_analysis_v1p20_installer_v1p20_win64_20240227</param.web.mcr.name>
     <param.package.mcr.name>Mototrak_Analysis_Installer_v1p14_win64_includes_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
     <param.windows.command.prompt>false</param.windows.command.prompt>
@@ -56,7 +56,7 @@ Updated 2023-11-03, 13:34 MST.</param.description>
 
 https://github.com/Vulintus/MotoTrak_Analysis
 
-Updated 2023-11-03, 13:34 MST.</param.help.text>
+Updated 2024-02-27, 16:17 MST.</param.help.text>
     <unset>
       <param.authnamewatermark />
       <param.summary />
