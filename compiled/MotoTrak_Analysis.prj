@@ -17,7 +17,7 @@
 
 https://github.com/Vulintus/MotoTrak_Analysis
 
-Updated 2025-06-26, 14:26 MST.</param.description>
+Updated 2025-06-26, 15:29 MST.</param.description>
     <param.screenshot>H:\My Drive\Vulintus Software (Drew)\Vulintus_Icons_and_Splash_Screens\images\MotoTrak\mototrak_main_splash_screen.png</param.screenshot>
     <param.guid />
     <param.installpath.string>\Vulintus\MotoTrak_Analysis\</param.installpath.string>
@@ -39,7 +39,7 @@ Updated 2025-06-26, 14:26 MST.</param.description>
     <param.web.mcr.name>mototrak_analysis_v1p20_installer_win64</param.web.mcr.name>
     <param.package.mcr.name>Mototrak_Analysis_Installer_v1p14_win64_includes_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
-    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.windows.command.prompt>false</param.windows.command.prompt>
     <param.create.log>true</param.create.log>
     <param.log.file>mototrak_analysis_errorlog.txt</param.log.file>
     <param.native.matlab>false</param.native.matlab>
@@ -50,7 +50,13 @@ Updated 2025-06-26, 14:26 MST.</param.description>
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments</param.help.text>
+	 input arguments 
+ Description 
+ 	 This is a compiled application version of Vulintus' open-source analysis functions written in MATLAB. You can download the MATLAB scripts at:
+
+https://github.com/Vulintus/MotoTrak_Analysis
+
+Updated 2025-06-26, 15:29 MST.</param.help.text>
     <unset>
       <param.authnamewatermark />
       <param.summary />
@@ -65,7 +71,6 @@ Updated 2025-06-26, 14:26 MST.</param.description>
       <param.package.mcr />
       <param.no.mcr />
       <param.no.mcr.name />
-      <param.windows.command.prompt />
       <param.native.matlab />
       <param.checkbox />
       <param.example />
