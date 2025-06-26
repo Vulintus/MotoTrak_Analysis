@@ -1,5 +1,5 @@
 <deployment-project plugin="plugin.ezdeploy" plugin-version="1.0">
-  <configuration build-checksum="4068855478" file="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled\MotoTrak_Analysis.prj" location="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled" name="MotoTrak_Analysis" preferred-package-location="H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled\installers" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
+  <configuration build-checksum="2355714968" file="H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\compiled\MotoTrak_Analysis.prj" location="H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\compiled" name="MotoTrak_Analysis" preferred-package-location="H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\compiled\installers" preferred-package-type="package.type.exe" target="target.ezdeploy.standalone" target-name="Application Compiler">
     <param.appname>MotoTrak_Analysis</param.appname>
     <param.icon>${PROJECT_ROOT}\MotoTrak_Analysis_resources\icon.ico</param.icon>
     <param.icons>
@@ -13,16 +13,16 @@
     <param.email>info@vulintus.com</param.email>
     <param.company>Vulintus, Inc.</param.company>
     <param.summary />
-    <param.description>This is a compiled application version of Vulintus' freely-available analysis functions written in MATLAB. You can download the MATLAB scripts at:
+    <param.description>This is a compiled application version of Vulintus' open-source analysis functions written in MATLAB. You can download the MATLAB scripts at:
 
 https://github.com/Vulintus/MotoTrak_Analysis
 
-Updated 2024-02-27, 16:17 MST.</param.description>
-    <param.screenshot>H:\My Drive\Vulintus Software (Drew)\Vulintus Icons and Splash Screens\images\MotoTrak\mototrak_install_splash_screen.png</param.screenshot>
+Updated 2025-06-26, 14:26 MST.</param.description>
+    <param.screenshot>H:\My Drive\Vulintus Software (Drew)\Vulintus_Icons_and_Splash_Screens\images\MotoTrak\mototrak_main_splash_screen.png</param.screenshot>
     <param.guid />
     <param.installpath.string>\Vulintus\MotoTrak_Analysis\</param.installpath.string>
     <param.installpath.combo>option.installpath.programfiles</param.installpath.combo>
-    <param.logo />
+    <param.logo>H:\My Drive\Vulintus Software (Drew)\Vulintus_Icons_and_Splash_Screens\images\MotoTrak\mototrak_install_splash_screen.png</param.logo>
     <param.install.notes />
     <param.target.install.notes />
     <param.intermediate>${PROJECT_ROOT}\testing</param.intermediate>
@@ -36,12 +36,12 @@ Updated 2024-02-27, 16:17 MST.</param.description>
     <param.web.mcr>true</param.web.mcr>
     <param.package.mcr>false</param.package.mcr>
     <param.no.mcr>false</param.no.mcr>
-    <param.web.mcr.name>mototrak_analysis_v1p20_installer_v1p20_win64_20240227</param.web.mcr.name>
+    <param.web.mcr.name>mototrak_analysis_v1p20_installer_win64</param.web.mcr.name>
     <param.package.mcr.name>Mototrak_Analysis_Installer_v1p14_win64_includes_mcr</param.package.mcr.name>
     <param.no.mcr.name>MyAppInstaller_app</param.no.mcr.name>
-    <param.windows.command.prompt>false</param.windows.command.prompt>
-    <param.create.log>false</param.create.log>
-    <param.log.file />
+    <param.windows.command.prompt>true</param.windows.command.prompt>
+    <param.create.log>true</param.create.log>
+    <param.log.file>mototrak_analysis_errorlog.txt</param.log.file>
     <param.native.matlab>false</param.native.matlab>
     <param.checkbox>false</param.checkbox>
     <param.example />
@@ -50,19 +50,12 @@ Updated 2024-02-27, 16:17 MST.</param.description>
 	 
  Input Arguments 
 	 -?  print help on how to use the application 
-	 input arguments 
- Description 
- 	 This is a compiled application version of Vulintus' freely-available analysis functions written in MATLAB. You can download the MATLAB scripts at:
-
-https://github.com/Vulintus/MotoTrak_Analysis
-
-Updated 2024-02-27, 16:17 MST.</param.help.text>
+	 input arguments</param.help.text>
     <unset>
       <param.authnamewatermark />
       <param.summary />
       <param.guid />
       <param.installpath.combo />
-      <param.logo />
       <param.install.notes />
       <param.target.install.notes />
       <param.enable.clean.build />
@@ -72,50 +65,50 @@ Updated 2024-02-27, 16:17 MST.</param.help.text>
       <param.package.mcr />
       <param.no.mcr />
       <param.no.mcr.name />
-      <param.create.log />
-      <param.log.file />
+      <param.windows.command.prompt />
       <param.native.matlab />
       <param.checkbox />
       <param.example />
     </unset>
     <fileset.main>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Analysis_Startup.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Analysis_Startup.m</file>
     </fileset.main>
     <fileset.resources />
     <fileset.package />
     <fileset.depfun>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\ArdyMotorFileRead.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\ArdyMotorHeaderRead.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Analysis_Default_Config.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Analysis_Edit_Config.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Daily_Report.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_File_Editor.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Graphical_Analysis.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Knob_Viewer.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Lever_Viewer.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_PopData_to_TSV.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_Pull_Viewer.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_SessionData_to_TSV.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrak_to_ArdyMotor.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\src\MotoTrakHeaderRead.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak V2\MotoTrak\Matlab Code\MotoTrakFileRead.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Behavioral Subfunctions\Vulintus_Set_AppData_Path.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Behavioral Subfunctions\Vulintus_Write_Config.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\big_waitbar.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\boxsmooth.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\cprintf.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\file_miner.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\uigetdate.m</file>
-      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus Common Functions\Vulintus Common Toolbox\Vulintus_Load_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\ArdyMotorFileRead.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\ArdyMotorHeaderRead.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Analysis_Default_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Analysis_Edit_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Daily_Report.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_File_Editor.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Graphical_Analysis.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Knob_Viewer.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Lever_Viewer.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_PopData_to_TSV.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_Pull_Viewer.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_SessionData_to_TSV.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrak_to_ArdyMotor.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\src\MotoTrakHeaderRead.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Behavior Programs\MotoTrak_V2\MotoTrak\Matlab Code\MotoTrakFileRead.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Behavior Programs\Vulintus_Common_Behavior\src\Vulintus_Set_AppData_Path.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Behavior Programs\Vulintus_Common_Behavior\src\Vulintus_Write_Config.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\big_waitbar.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\boxsmooth.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\cprintf.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\file_miner.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\Set_AppData_Local_Path.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\uigetdate.m</file>
+      <file>H:\My Drive\Vulintus Software (Drew)\Vulintus_Common_Toolbox\Vulintus_Load_Config.m</file>
     </fileset.depfun>
     <build-deliverables>
-      <file location="${PROJECT_ROOT}\testing" name="readme.txt" optional="true">H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled\testing\readme.txt</file>
-      <file location="${PROJECT_ROOT}\testing" name="splash.png" optional="false">H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled\testing\splash.png</file>
-      <file location="${PROJECT_ROOT}\testing" name="MotoTrak_Analysis.exe" optional="false">H:\My Drive\Vulintus Software (Drew)\MotoTrak\MotoTrak Software\MotoTrak Analysis\compiled\testing\MotoTrak_Analysis.exe</file>
+      <file location="${PROJECT_ROOT}\testing" name="MotoTrak_Analysis.exe" optional="false">H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\compiled\testing\MotoTrak_Analysis.exe</file>
+      <file location="${PROJECT_ROOT}\testing" name="readme.txt" optional="true">H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\compiled\testing\readme.txt</file>
+      <file location="${PROJECT_ROOT}\testing" name="splash.png" optional="false">H:\My Drive\Vulintus Software (Drew)\Analysis Programs\MotoTrak_Analysis\compiled\testing\splash.png</file>
     </build-deliverables>
     <workflow />
     <matlab>
-      <root>C:\Program Files\MATLAB\R2022b</root>
+      <root>C:\Program Files\MATLAB\R2024a</root>
       <toolboxes />
     </matlab>
     <platform>

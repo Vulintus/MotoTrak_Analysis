@@ -1,22 +1,30 @@
 function MotoTrak_SessionData_to_TSV(varargin)
 
 %
-%MOTOTRAK_SESSION_TO_TSV.m - Vulintus, Inc., 2015.
-%   MOTOTRAK_SESSIONDATA_TO_TSV has the user select one or multiple *.ArdyMotor files
-%   and then exports a companion text file for each that is readable in
-%   Microsoft Excel.  
+% MotoTrak_SessionData_to_TSV.m
+% 
+%   copyright 2015, Vulintus, Inc.
+%
+%   MOTOTRAK_SESSIONDATA_TO_TSV has the user select one or multiple 
+%   *.ArdyMotor files and then exports a companion text file for each that
+%   is readable in Microsoft Excel.  
 %
 %   Created July 6, 2015, by Drew Sloan.
 %
 %   UPDATE LOG:
-%
-%   11/16/2015 - Drew Sloan - Added a progress bar and auto-opening of the
-%       destination directory in Windows Explorer at the end of conversion.
-%   08/08/2016 - Drew Sloan - Renamed to "MotoTrak_Session_to_TSV" and
-%       incorporated into combined analysis GUI, temporarily commenting out
-%       the option to specify files in the function call.
-%   09/26/2019 - Drew Sloan - Converted the if-then handling of module type
-%       to switch-case and added press-time outputs for the lever module.
+%   2015-07-06 - Drew Sloan - Function first created.
+%   2015-11-16 - Drew Sloan - Added a progress bar and auto-opening of the
+%                             destination directory in Windows Explorer at
+%                             the end of conversion.
+%   2016-08-08 - Drew Sloan - Renamed to "MotoTrak_Session_to_TSV" and
+%                             incorporated it into combined analysis GUI,
+%                             temporarily commenting out the option to 
+%                             specify files in the function call.
+%   2019-09-26 - Drew Sloan - Converted the if-then handling of module type
+%                             to switch-case and added press-time outputs
+%                             for the lever module.
+%   2025-06-25 - Drew Sloan - Added inter-press interval outputs for the
+%                             lever module.
 %
 
 if nargin > 1 && ishandle(varargin{1})                                      %If the first input argument is a uicontrol handle...
@@ -216,7 +224,8 @@ for f = 1:length(files)                                                     %Ste
                 fprintf(fid,'Release Threshold: %1.3f degrees\n',...
                     lever_return_pt);                                       %Write the press threshold.
             end         
-
+            
+            num_ipi = 0;                                                    %Keep track of the number of inter-press-intervals.
             for t = 1:length(data.trial)                                    %Step through each trial.
                 a = (data.trial(t).sample_times >= 0 & ...
                     data.trial(t).sample_times <= ...
@@ -244,6 +253,8 @@ for f = 1:length(files)                                                     %Ste
                     [1, original_indices(diff_presses_signal == 1)' - 1];   %Find the samples with upward-going press threshold crossings.
                 data.trial(t).press_times = ...
                     times(data.trial(t).press_indices);                     %Save the press times.
+                num_ipi = max(num_ipi,...
+                    length(data.trial(t).press_times) - 1);                 %Update the number of inter-press intervals.
 
                 %Find the position/time of each release
                 data.trial(t).release_indices = ...
@@ -261,7 +272,11 @@ for f = 1:length(files)                                                     %Ste
                 fprintf(fid,'%s\t','Outcome');                              %Write a column label for the outcome.
                 fprintf(fid,'%s\t','Hit Threshold (Presses)');              %Write a column label for the hit threshold.
                 fprintf(fid,'%s\t','Press Count');                          %Write a column label for the number of presses.
-                fprintf(fid,'%s\n','Press Times (ms)');                     %Write a column label for the pull duration.
+                fprintf(fid,'%s\t','Press Times (ms)');                     %Write a column label for the pull duration.
+                for i = 1:num_ipi                                           %Step through the inter-press intervals.
+                    fprintf(fid,'Inter-Press Interval %1.0f (ms)\t',i);     %Print a column heading for each interpress interval.e
+                end
+                fprintf(fid,'\n');                                          %Print a carriage return.
                 
                 %Write all of the trial data.
                 for t = 1:length(data.trial)                                %Step through each trial.
@@ -272,10 +287,17 @@ for f = 1:length(files)                                                     %Ste
                     fprintf(fid,'%1.0f\t',data.trial(t).thresh);            %Write the trial threshold.
                     fprintf(fid,'%1.0f\t',...
                         numel(data.trial(t).press_times));                  %Write the number of presses.
-                    fprintf(fid,'[ ');                                       %Write left brackets.
-                    fprintf(fid,'%1.0f ',data.trial(t).press_times);       %Write the press times.
-                    fprintf(fid,']\n');                                     %Write right brackets.
+                    fprintf(fid,'[ ');                                      %Write left brackets.
+                    fprintf(fid,'%1.0f ',data.trial(t).press_times);        %Write the press times.
+                    fprintf(fid,']\t');                                     %Write right brackets.
+                    for i = 2:length(data.trial(t).press_times)             %Step through each press time.
+                        fprintf(fid,'%1.0f\t',...
+                            data.trial(t).press_times(i) - ...
+                            data.trial(t).press_times(i-1));                %Add each inter-press interval.
+                    end
+                    fprintf(fid,'\n');                                      %Print a carriage return.
                 end
+                
             end
 
         
@@ -579,9 +601,12 @@ end
 
 waitbar.close();                                                            %Close the waitbar.
 
-if length(files) == 1 && exist(newfile,'file')                              %If there was only one file...
+if isscalar(files) && exist(newfile,'file')                                 %If there was only one file...
     winopen(newfile);                                                       %Open the new TSV file.
 else                                                                        %Otherwise...
+    if isempty(path)                                                        %If the data file path is the current folder.
+        path = pwd;                                                         %Set the path to the current folder.
+    end
     str = ['explorer.exe ' path];                                           %Create a system command to open Windows explorer in the current directory.
     system(str);                                                            %Execute the system command.
 end

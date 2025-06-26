@@ -1234,10 +1234,10 @@ for d = 1:length(devices)                                                   %Ste
                             100*nanmean(data(s).peak > nanmax(data(s).thresh)));       %Print the percentage of trials that exceed the maximum hit threshold.
                     case 'POSITION'
                         fprintf(fid(d),'%1.2f',data(s).position);           %Print the device position.  
-                    case 'PRESS ATTEMPTS PER TRIAL'
+                    case 'PRESS ATTEMPTS PRIOR TO HIT ON HIT TRIALS'
                         fprintf(fid(d),'%1.3f',...
                             nanmean(data(s).pre_hit_attempts));             %Print the mean number of attempts before a hit.
-                    case 'PULL ATTEMPTS PER TRIAL'
+                    case 'PULL ATTEMPTS PRIOR TO HIT ON HIT TRIALS'
                         fprintf(fid(d),'%1.3f',...
                             nanmean(data(s).pre_hit_attempts));             %Print the mean number of attempts before a hit.                    
                     case 'STAGE'
