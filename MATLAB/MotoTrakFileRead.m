@@ -282,3 +282,14 @@ trial.signal = nan(num_streams, N);
 for i=1:num_streams
     trial.signal(i, :) = fread(fid, N, '*float32');
 end
+
+%Correct for non-relative sample times, if found.
+if trial.signal(1,1) > 0
+    sample_period = round(median(diff(trial.signal(1,:)))/1000);
+    i = (1000*trial.pre_trial_duration/sample_period) + 1;
+    trial.signal(1,:) = trial.signal(1,:) - trial.signal(1,i);
+    if trial.signal(1,end) > 1000*(trial.pre_trial_duration + ...
+            trial.hit_window_duration + trial.post_trial_duration)
+        trial.signal(1,:) = trial.signal(1,:)/1000;
+    end
+end
