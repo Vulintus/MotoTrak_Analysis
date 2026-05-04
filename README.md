@@ -15,10 +15,12 @@ MotoTrak Analysis is designed to process MotoTrak behavioral training data for d
 
 If you are writing your own analysis scripts, start with these readers:
 
-- MATLAB: [MATLAB/ArdyMotorFileRead.m](MATLAB/ArdyMotorFileRead.m)
+
 - MATLAB: [MATLAB/MotoTrakFileRead.m](MATLAB/MotoTrakFileRead.m)
-- Python: [Python/ArdyMotorFileRead.py](Python/ArdyMotorFileRead.py)
+- MATLAB: [MATLAB/ArdyMotorFileRead.m](MATLAB/ArdyMotorFileRead.m)
 - Python: [Python/MotoTrakFileRead.py](Python/MotoTrakFileRead.py)
+- Python: [Python/ArdyMotorFileRead.py](Python/ArdyMotorFileRead.py)
+
 
 Binary format details are documented in:
 
@@ -26,7 +28,18 @@ Binary format details are documented in:
 
 ### MATLAB Reader Usage
 
-#### 1) Read legacy `.ArdyMotor` files
+#### 1) Read `.MotoTrak` / `.MOTOTRAK` files
+
+```matlab
+session = MotoTrakFileRead('D:\Data\Animal01\session02.MotoTrak');
+
+% Example custom analysis
+trial_count = numel(session.trial);
+mean_hits_per_trial = mean(arrayfun(@(t) numel(t.hit_times), session.trial));
+fprintf('Trials: %d, Mean hits/trial: %.2f\n', trial_count, mean_hits_per_trial);
+```
+
+#### 2) Read legacy `.ArdyMotor` files
 
 ```matlab
 % Returns data struct and file format version
@@ -38,33 +51,13 @@ hit_trials = sum(arrayfun(@(t) strcmpi(char(t.outcome), 'H'), data.trial));
 fprintf('Trials: %d, Hits: %d\n', n_trials, hit_trials);
 ```
 
-#### 2) Read `.MotoTrak` / `.MOTOTRAK` files
 
-```matlab
-session = MotoTrakFileRead('D:\Data\Animal01\session02.MotoTrak');
-
-% Example custom analysis
-trial_count = numel(session.trial);
-mean_hits_per_trial = mean(arrayfun(@(t) numel(t.hit_times), session.trial));
-fprintf('Trials: %d, Mean hits/trial: %.2f\n', trial_count, mean_hits_per_trial);
-```
 
 ### Python Reader Usage
 
 You can import the Python reader modules directly in your scripts.
 
-#### 1) Read legacy `.ArdyMotor` files
-
-```python
-from ArdyMotorFileRead import ArdyMotorFileRead
-
-data, version = ArdyMotorFileRead(r"D:\Data\Animal01\session01.ArdyMotor")
-print("version:", version)
-print("subject:", data.get("subject"))
-print("trials:", len(data.get("trial", [])))
-```
-
-#### 2) Read `.MotoTrak` / `.MOTOTRAK` files
+#### 1) Read `.MotoTrak` / `.MOTOTRAK` files
 
 ```python
 from MotoTrakFileRead import MotoTrakFileRead
@@ -73,6 +66,17 @@ session = MotoTrakFileRead(r"D:\Data\Animal01\session02.MotoTrak")
 print("version:", session.get("version"))
 print("subject:", session.get("subject"))
 print("trials:", len(session.get("trial", [])))
+```
+
+#### 2) Read legacy `.ArdyMotor` files
+
+```python
+from ArdyMotorFileRead import ArdyMotorFileRead
+
+data, version = ArdyMotorFileRead(r"D:\Data\Animal01\session01.ArdyMotor")
+print("version:", version)
+print("subject:", data.get("subject"))
+print("trials:", len(data.get("trial", [])))
 ```
 
 #### 3) Run the included example script
@@ -89,7 +93,7 @@ python Python/example_usage.py --ardymotor "D:/Data/a.ArdyMotor" --mototrak "D:/
 
 Supported session-file formats:
 
-- `.MotoTrak` / `.MOTOTRAK` (MotoTrak 2.x data files)
+- `.MOTOTRAK` (MotoTrak 2.x data files)
 - `.ArdyMotor` (legacy format)
 
 ## Features
@@ -112,7 +116,7 @@ Supported session-file formats:
 
 ## Installation
 
-### Two Ways To Use MotoTrak Analysis
+### Two Ways To Use the MotoTrak Analysis Suite
 
 #### Option 1: Compiled Executable (Recommended for most users)
 For users without MATLAB, install the standalone application:
@@ -184,9 +188,6 @@ MotoTrak_Analysis/
 - Python file reading: [Python/MotoTrakFileRead.py](Python/MotoTrakFileRead.py), [Python/ArdyMotorFileRead.py](Python/ArdyMotorFileRead.py)
 - MATLAB utilities and GUI modules: [MATLAB/src/](MATLAB/src/)
 
-### Building Compiled Version
-Use [MATLAB/src/Deploy_MotoTrak_Analysis.m](MATLAB/src/Deploy_MotoTrak_Analysis.m) to create a standalone executable via MATLAB Compiler.
-
 ## License
 
 Copyright © Vulintus, Inc. All rights reserved.
@@ -198,7 +199,7 @@ For questions or issues, please contact Vulintus, Inc.
 ## Citation
 
 If you use this toolbox in your research, please cite:
-> MotoTrak Analysis Toolbox, Vulintus, Inc., https://github.com/[repository-url]
+> MotoTrak Analysis Toolbox, Vulintus, Inc., https://github.com/Vulintus/MotoTrak_Analysis
 
 ## Version History
 
